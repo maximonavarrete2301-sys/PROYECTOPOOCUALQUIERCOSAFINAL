@@ -8,6 +8,7 @@ public class Region {
     public Region(int cod, String nom){
         codigo = cod;
         nombre = nom;
+        this.comunas = new ArrayList<>();
     }
 
     public int getCodigo(){
@@ -19,18 +20,34 @@ public class Region {
     }
 
     public boolean addComuna(int cod, String nom){
-
+        for(Comuna comuna : comunas){
+            if(comuna.getCodigo() == codigo || comuna.getNombre().equalsIgnoreCase(nombre)){
+                return false;
+            }
+        }
+        Comuna nvaComuna = new Comuna(codigo, nombre, this);
+        comunas.add(nvaComuna);
+        return true;
     }
 
-    public Comuna findComunaByld(int codigo){
-
+    public Comuna findComunaById(int codigo){
+        for(Comuna comuna : comunas){
+            if(comuna.getCodigo() == codigo){
+                return comuna;
+            }
+        }
+        return null;
     }
 
-    public Comuna getComunas(){
-
+    public Comuna[] getComunas(){
+        return comunas.toArray(new Comuna[0]);
     }
 
     public int CantidadEstaciones(){
-
+        int cantidad = 0;
+        for(Comuna comuna : comunas){
+            cantidad += comuna.getCantidadEstaciones();
+        }
+        return cantidad;
     }
 }

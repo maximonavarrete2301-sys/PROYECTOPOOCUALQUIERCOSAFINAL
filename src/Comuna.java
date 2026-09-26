@@ -10,6 +10,7 @@ public class Comuna {
         this.codigo = codigo;
         this.nombre = nombre;
         this.region = region;
+        this.estaciones = new ArrayList<>();
     }
 
     public int getCodigo(){
@@ -25,7 +26,12 @@ public class Comuna {
     }
 
     public EstacionMeteorologica findEstacionByld(String codigo){
-
+        for(EstacionMeteorologica estacion : estaciones){
+            if(estacion.getCodigo().equals(codigo)){
+                return estacion;
+            }
+        }
+        return null;
     }
 
     public Region getRegion(){
@@ -33,10 +39,16 @@ public class Comuna {
     }
 
     public int getCantidadEstaciones(){
-        return //cantidadEstaciones
+        return estaciones.size();
     }
 
     public int getCantidadEstacionesActivas(){
-
+        int cantEstacionesAct = 0;
+        for(EstacionMeteorologica estacion : estaciones){
+            if(estacion.getEstado() == Estado.ACTIVO){
+                cantEstacionesAct++;
+            }
+        }
+        return cantEstacionesAct;
     }
 }
