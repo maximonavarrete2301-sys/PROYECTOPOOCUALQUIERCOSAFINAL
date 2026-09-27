@@ -56,5 +56,91 @@ public class InterfazUsuario {
             }
         }
     }
+    private void crearRegion() {
+        System.out.println();
+        System.out.println("CREAR REGIÓN");
+        System.out.print("Código de región: ");
+        int codigo = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Nombre: ");
+        String nombre = sc.nextLine();
+        sc.nextLine();
+
+        if (instituto.creaRegion(codigo, nombre)) {
+            System.out.println("Región creada correctamente");
+        } else {
+            System.out.println("No se pudo crear la región");
+        }
+    }
+
+    private void crearComuna() {
+        System.out.println();
+        System.out.println("CREAR COMUNA");
+        System.out.print("Codigo de región: ");
+        int codigoRegion = sc.nextInt();
+
+
+        System.out.print("Codigo de comuna: ");
+        int codigo = sc.nextInt();
+
+
+        System.out.print("Nombre: ");
+        String nombre = sc.nextLine();
+        sc.nextLine();
+
+        if (instituto.creaComuna(codigo, nombre, codigoRegion)) {
+            System.out.println("Comuna creada correctamente");
+        } else {
+            System.out.println("No se pudo crear la comuna");
+        }
+    }
+    private void crearEstacionMeteorologica() {
+        System.out.println();
+        System.out.println("CREAR ESTACIÓN METEOROLOGICA");
+        System.out.println("-------------------------------");
+
+        System.out.print("Código de estación: ");
+        String codigo = sc.nextLine();
+
+        System.out.print("Nombre: ");
+        String nombre = sc.nextLine();
+
+
+        System.out.print("Longitud: ");
+        float longitud = sc.nextFloat();
+
+        System.out.print("Latitud: ");
+        float latitud = sc.nextFloat();
+
+        System.out.print("Altitud (m): ");
+        float altitud = sc.nextFloat();
+
+        System.out.print("Codigo de región: ");
+        int codigoRegion = sc.nextInt();
+
+        System.out.print("Código de comuna: ");
+        int codigoComuna = sc.nextInt();
+        sc.nextLine();
+
+        if (instituto.creaEstacion(codigo, nombre, longitud,
+                latitud, altitud, codigoRegion, codigoComuna)) {
+            System.out.println("> Estación meteorologica creada correctamente");
+        } else {
+            System.out.println ("> No se pudo crear la estación meteorologica");
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    }
 
 }
