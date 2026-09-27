@@ -7,7 +7,7 @@ public class InterfazUsuario {
         InterfazUsuario interfaz = new InterfazUsuario();
         interfaz.menuPrincipal();
     }
-    public void menuPrincipal(){
+    private void menuPrincipal(){
         instituto = new InstitutoMeteorologia();
         int opcion = 0;
 
