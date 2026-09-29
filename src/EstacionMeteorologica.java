@@ -150,6 +150,24 @@ public class EstacionMeteorologica {
         }
         return new String[0][0];
     }
+    private String obtenerTipoSensor(Sensor sensor) {
+        if (sensor instanceof SensorTemperatura) {
+            return "TEMPERATURA";
+        }
+        if (sensor instanceof SensorHumedad) {
+            return "HUMEDAD";
+        }
+        if (sensor instanceof SensorPresion) {
+            return "PRESION";
+        }
+        if (sensor instanceof SensorViento) {
+            return "VIENTO";
+        }
+        if (sensor instanceof SensorPrecipitacion) {
+            return "PRECIPITACION";
+        }
+        return "";
+    }
 }
 
 
