@@ -32,6 +32,7 @@ public class InterfazUsuario {
 
             while (opcion < 1 || opcion > 7) {
                 System.out.print("Opción invalida. Ingrese opción entre 1 y 7");
+                System.out.print("Ingrese opcion:");
                 opcion = sc.nextInt();
             }
             sc.nextLine();
@@ -252,7 +253,8 @@ public class InterfazUsuario {
             opcion = sc.nextInt();
 
             while (opcion < 1 || opcion > 6) {
-                System.out.println("Error. Ingrese una opcion entre 1 y 6");
+                System.out.println("Opción invalida. Ingrese una opcion entre 1 y 6");
+                System.out.print("Ingrese opcion:");
                 opcion = sc.nextInt();
             }
             sc.nextLine();
