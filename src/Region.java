@@ -43,7 +43,7 @@ public class Region {
         return comunas.toArray(new Comuna[0]);
     }
 
-    public int CantidadEstaciones(){
+    public int getCantidadEstaciones(){
         int cantidad = 0;
         for(Comuna comuna : comunas){
             cantidad += comuna.getCantidadEstaciones();
