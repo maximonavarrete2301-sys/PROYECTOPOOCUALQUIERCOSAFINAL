@@ -23,15 +23,10 @@ public class EstacionMeteorologica {
         this.sensores = new ArrayList<>();
     }
 
-    public String getCodigo(){
-        return codigo;
-    }
-
-    public Estado getEstado(){
-        return estado;
-    }
-
     public boolean instalaSensor(String codigo, String marca, String modelo, TipoSensor tipo){
+        if (estado != Estado.ACTIVO){
+            return false;
+        }
         for(Sensor sensor : sensores){
             if(sensor.getCodigo().equals(codigo)){
                 return false;
