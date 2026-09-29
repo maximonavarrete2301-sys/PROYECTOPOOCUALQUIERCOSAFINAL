@@ -32,6 +32,6 @@ public class Medicion {
     @Override
     public String toString(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return fechaHora.format(formatter) + ";" + valor;
+        return fechaHora.format(formatter) + "; " + valor;
     }
 }

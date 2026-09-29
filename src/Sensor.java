@@ -48,10 +48,21 @@ public abstract class Sensor {
         }
         return false;
     }
-
+    //nuevo getlastmedicion
     public Medicion getLastMedicion() {
-        if (mediciones.isEmpty()) return null;
-        return mediciones.get(mediciones.size() - 1);
+        if (mediciones.isEmpty()) {
+            return null;
+        }
+
+        Medicion ultima = mediciones.get(0);
+
+        for (Medicion medicion : mediciones) {
+            if (medicion.getFechaHora().isAfter(ultima.getFechaHora())) {
+                ultima = medicion;
+            }
+        }
+
+        return ultima;
     }
 
     public Medicion[] getMedicionesBetween(LocalDateTime inicio, LocalDateTime fin) {
