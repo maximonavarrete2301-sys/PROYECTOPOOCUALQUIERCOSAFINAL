@@ -21,11 +21,11 @@ public class Region {
 
     public boolean addComuna(int cod, String nom){
         for(Comuna comuna : comunas){
-            if(comuna.getCodigo() == codigo || comuna.getNombre().equalsIgnoreCase(nombre)){
+            if(comuna.getCodigo() == cod || comuna.getNombre().equalsIgnoreCase(nom)){
                 return false;
             }
         }
-        Comuna nvaComuna = new Comuna(codigo, nombre, this);
+        Comuna nvaComuna = new Comuna(cod, nom, this);
         comunas.add(nvaComuna);
         return true;
     }

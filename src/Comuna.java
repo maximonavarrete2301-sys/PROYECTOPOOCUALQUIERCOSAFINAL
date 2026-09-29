@@ -25,7 +25,7 @@ public class Comuna {
         estaciones.add(estacion);
     }
 
-    public EstacionMeteorologica findEstacionByld(String codigo){
+    public EstacionMeteorologica findEstacionById(String codigo){
         for(EstacionMeteorologica estacion : estaciones){
             if(estacion.getCodigo().equals(codigo)){
                 return estacion;
