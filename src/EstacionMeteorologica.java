@@ -125,6 +125,31 @@ public class EstacionMeteorologica {
         }
         return resumenSensor;
     }
+
+    public String[][] getMedicionesSensorBetween(String codigoSensor, LocalDateTime inicio, LocalDateTime fin){
+        for(Sensor sensor : sensores){
+            if(sensor.getCodigo().equals(codigoSensor)){
+                Medicion[] mediciones =
+                        sensor.getMedicionesBetween(inicio, fin);
+                if(mediciones.length == 0){
+                    return new String[0][0];
+                }
+                String[][] datos = new String[mediciones.length][4];
+
+                DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+
+                for(int i = 0; i < mediciones.length; i++){
+                    datos[i][0] = mediciones[i].getFechaHora().format(formatoFecha);
+                    datos[i][1] = mediciones[i].getFechaHora().format(formatoHora);
+                    datos[i][2] = String.valueOf(mediciones[i].getValor());
+                    datos[i][3] = sensor.getUnidad();
+                }
+                return datos;
+            }
+        }
+        return new String[0][0];
+    }
 }
 
 
