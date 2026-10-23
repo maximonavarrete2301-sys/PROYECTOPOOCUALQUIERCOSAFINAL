@@ -1,17 +1,28 @@
+package vista;
+import controlador.InstitutoMeteorologia;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 //Maximo Navarrete Fernandez
-public class InterfazUsuario {
-    private Scanner sc = new Scanner(System.in);
-    private InstitutoMeteorologia instituto;
 
-    public static void main(String[] args) {
-        InterfazUsuario interfaz = new InterfazUsuario();
-        interfaz.menuPrincipal();
+public class InterfazUsuario {
+    private static InterfazUsuario instancia;
+        private Scanner sc;
+
+        private InterfazUsuario(){
+            sc = new Scanner(System.in);
+            InstitutoMeteorologia.getInstance();
+        }
+    }
+    public static InterfazUsuario getInstance(){
+        if (instancia == null) {
+            instancia = new InterfazUsuario();
+        }
+        return instancia;
     }
 
-    private void menuPrincipal() {
+    public void menuPrincipal() {
         instituto = new InstitutoMeteorologia();
         int opcion = 0;
 
