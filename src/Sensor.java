@@ -1,6 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Sensor {
     private String codigo;
@@ -9,6 +10,7 @@ public abstract class Sensor {
     private Estado estado;
     private EstacionMeteorologica estacion;
     private List<Medicion> mediciones;
+//estacion meteorologica deja de dar error -  ignorar
 
     protected Sensor(String codigo, String marca, String modelo, EstacionMeteorologica estacion){
         this.codigo = codigo;
@@ -19,18 +21,10 @@ public abstract class Sensor {
         this.mediciones = new ArrayList<>();
     }
 
-    public String getCodigo(){
-        return codigo;
-    }
-    public String getMarca(){
-        return marca;
-    }
-    public String getModelo(){
-        return modelo;
-    }
-    public Estado getEstado(){
-        return estado;
-    }
+    public String getCodigo(){ return codigo; }
+    public String getMarca(){ return marca; }
+    public String getModelo(){ return modelo; }
+    public Estado getEstado(){ return estado; }
 
     public void setEstado (Estado estado){
         this.estado = estado;
@@ -48,34 +42,42 @@ public abstract class Sensor {
         }
         return false;
     }
-    //nuevo getlastmedicion
-    public Medicion getLastMedicion() {
+
+    public Medicion getLastMedicion(){
         if (mediciones.isEmpty()) {
             return null;
         }
-
         Medicion ultima = mediciones.get(0);
-
-        for (Medicion medicion : mediciones) {
-            if (medicion.getFechaHora().isAfter(ultima.getFechaHora())) {
+        for (Medicion medicion : mediciones){
+            if (medicion.getFechaHora().isAfter(ultima.getFechaHora())){
                 ultima = medicion;
             }
         }
-
         return ultima;
     }
 
-    public Medicion[] getMedicionesBetween(LocalDateTime inicio, LocalDateTime fin) {
+    public Medicion[] getMedicionesBetween(LocalDateTime inicio, LocalDateTime fin){
         List<Medicion> resultado = new ArrayList<>();
-        for (Medicion m : mediciones) {
+        for (Medicion m : mediciones){
             LocalDateTime fh = m.getFechaHora();
-            if (!fh.isBefore(inicio) && !fh.isAfter(fin)) {
+            if (!fh.isBefore(inicio) && !fh.isAfter(fin)){
                 resultado.add(m);
             }
         }
         return resultado.toArray(new Medicion[0]);
     }
 
+    // parte nueva del semsor
+    public Optional<ResumenMediciones> getResumenBetween(LocalDateTime inicio, LocalDateTime fin) {
+        Medicion[] filtradas = getMedicionesBetween(inicio, fin);
+        if (filtradas.length == 0){
+            return Optional.empty();
+        }
+        return Optional.of(new ResumenMediciones(filtradas));
+    }
+
+    //meto abstrac :b
+    public abstract TipoSensor getTipo();
     public abstract String getUnidad();
     public abstract boolean esValorAdmisible(float valor);
 }
