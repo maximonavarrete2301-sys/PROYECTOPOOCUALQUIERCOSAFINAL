@@ -1,4 +1,5 @@
 package controlador;//Maximo Navarrete Fernandez
+import javax.swing.plaf.synth.Region;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -18,52 +19,47 @@ public class InstitutoMeteorologia {
 
     public void creaRegion(int codigo, String nombre)
     throws MeteorologiaException {
+        if (findRegion(codigo).isPresent()) {
+            throw new MeteorologiaException("Ya existe una región con el codigo " + codigo );
+        }
         for (Region region : regiones) {
-            if (region.getCodigo() == codigo ||
-                    region.getNombre().equalsIgnoreCase(nombre)) {
-                return false;
+            if (region.getNombre().equalsIgnoreCase(nombre)) {
+                throw new MeteorologiaException("Ya existe una región con el nomnbre " + nombre);
             }
         }
-        Region region = new Region(codigo, nombre);
-        regiones.add(region);
-        return true;
+        regiones.add(new Region(codigo, nombre));
     }
 
-    public boolean creaComuna(int codigo, String nombre, int codigoRegion) {
-        for (Region region : regiones) {
-            if (region.getCodigo() == codigoRegion) {
-                return region.addComuna(codigo, nombre);
+    public boolean creaComuna(int codigo, String nombre, int codigoRegion)
+        throws MeteorologiaException {
+            Optional<Region> region = findRegion(codigoRegion);
+            if (region.isEmpty() ){
+                throw new MeteorologiaException("No existe una región con el codigo " + codigoRegion);
             }
+            region.get().addComuna(codigo, nombre);
         }
-        return false;
-    }
 
     public boolean creaEstacion(String cod, String nombre, float lon,
-                                float lat, float alt, int codRegion, int codComuna) {
-        Region regionEncontrada = null;
-        for (Region region : regiones) {
-            if (region.getCodigo() == codRegion) {
-                regionEncontrada = region;
-            }
+                                float lat, float alt, int codRegion, int codComuna)
+            throws MeteorologiaException {
+        if (findEstacion(cod).isPresent()) {
+            throw new MeteorologiaException("Ya existe una estación con el codigo " + cod);
         }
-        if (regionEncontrada == null) {
-            return false;
+        Optional<Region> region = findRegion(codRegion);
+        if (region.isEmpty()) {
+            throw new MeteorologiaException ("No existe una región con el codigo " + codRegion);
         }
-        Comuna comuna = regionEncontrada.findComunaById(codComuna);
-        if (comuna == null) {
-            return false;
+
+        Optional<Comuna> comuna = findComuna(codRegion, codComuna);
+        if (comuna.isEmpty()) {
+            throw new MeteorologiaException("No existe una comuna con el codigo " + codComuna
+            " en la region " + region.get().getNombre());
         }
-        for (EstacionMeteorologica estacion : estaciones) {
-            String[] partes = estacion.toString().split("; ");
-            if (partes[0].equals(cod)) {
-                return false;
-            }
-        }
+
         EstacionMeteorologica estacion =
-                new EstacionMeteorologica(cod, nombre, lon, lat, alt, comuna);
-        comuna.addEstacion(estacion);
+                new EstacionMeteorologica(cod, nombre, lon, lat, alt, comuna.get());
+        comuna.get().addEstacion(estacion);
         estaciones.add(estacion);
-        return true;
     }
 
     public boolean instalaSensor(String cod, String marca, String modelo, TipoSensor tipo,
