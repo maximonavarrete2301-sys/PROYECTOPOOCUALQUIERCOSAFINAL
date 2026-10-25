@@ -1,12 +1,23 @@
 package controlador;//Maximo Navarrete Fernandez
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class InstitutoMeteorologia {
+    private static InstitutoMeteorologia instancia ;
     private ArrayList<Region> regiones = new ArrayList<>();
     private ArrayList<EstacionMeteorologica> estaciones = new ArrayList<>();
+    private InstitutoMeteorologia(){
+    }
+    public static InstitutoMeteorologia getInstance() {
+        if (instancia == null) {
+            instancia = new InstitutoMeteorologia();
+        }
+        return instancia
+    }
 
-    public boolean creaRegion(int codigo, String nombre) {
+    public void creaRegion(int codigo, String nombre)
+    throws MeteorologiaException {
         for (Region region : regiones) {
             if (region.getCodigo() == codigo ||
                     region.getNombre().equalsIgnoreCase(nombre)) {
@@ -199,4 +210,45 @@ public class InstitutoMeteorologia {
         }
         return new String[0][0];
     }
+
+    private Optional<Region> findRegion(int codigo) {
+        for (Region region : regiones) {
+            if (region.getCodigo() == codigo) {
+                return Optional.of(region);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<EstacionMeteorologica> findEstacion(String codigo) {
+
+        for (EstacionMeteorologica estacion : estaciones) {
+            if (estacion.getCodigo().equals(codigo)) {
+                return Optional.of(estacion);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<Comuna> findComuna(int codigoRegion, int codigoComuna) {
+
+        Optional<Region> region = findRegion(codigoRegion);
+        if (region.isEmpty()) {
+            return Optional.empty();
+        }
+        return region.get().findComunaById(codigoComuna);
+    }
+
+    private Optional<Sensor> findSensor(String codigoEstacion, String codigoSensor) {
+
+        Optional<EstacionMeteorologica> estacion = findEstacion(codigoEstacion);
+
+        if (estacion.isEmpty()) {
+            return Optional.empty();
+        }
+        return estacion.get().findSensorById(codigoSensor);
+    }
+
 }

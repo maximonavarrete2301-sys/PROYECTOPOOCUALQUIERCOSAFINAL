@@ -44,15 +44,13 @@ public void menuPrincipal() {
         System.out.println("10. Salir");
         System.out.print("Opcion: ");
 
-        opcion = sc.nextInt();
+        opcion = leerEntero();
 
         while (opcion < 1 || opcion > 10) {
             System.out.print("Opción invalida. Ingrese opción entre 1 y 10");
             System.out.print("Ingrese opcion:");
-            opcion = sc.nextInt();
+            opcion = leerEntero();
         }
-        sc.nextLine();
-
         switch (opcion) {
             case 1:
                 crearRegion();
@@ -101,12 +99,12 @@ private void crearRegion() {
     System.out.println();
     System.out.println("CREAR REGIÓN");
     System.out.print("Código de región: ");
-    int codigo = sc.nextInt();
-    sc.nextLine();
-
+    int codigo = leerEntero();
 
     System.out.print("Nombre: ");
-    String nombre = sc.nextLine();
+    String nombre = leerTexto();
+    try {
+        InstitutoMeteorologia.getInstance().creaRegion(codigo, nombre);
 
 
     if (instituto.creaRegion(codigo, nombre)) {
