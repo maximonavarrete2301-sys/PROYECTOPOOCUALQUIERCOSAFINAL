@@ -269,6 +269,45 @@ private void registrarMedicion() {
         mostrarError(e);
     }
 }
+    private void cambiarEstadoSensor() {
+        System.out.println();
+        System.out.println("CAMBIAR ESTADO DE SENSOR");
+        System.out.println("-------------------------");
+
+        System.out.print("Código de estación: ");
+        String codigoEstacion = leerTexto();
+
+        System.out.print("Código de sensor: ");
+        String codigoSensor = leerTexto();
+
+        System.out.print("Nuevo estado [1 ACTIVO 2 INACTIVO]: ");
+        int opcionEstado = leerEntero();
+
+        while (opcionEstado < 1 || opcionEstado > 2) {
+            System.out.print("Estado invalido. Ingrese 1 o 2: ");
+            opcionEstado = leerEntero();
+        }
+
+        Estado estado;
+
+        if (opcionEstado == 1) {
+            estado = Estado.ACTIVO;
+        } else {
+            estado = Estado.INACTIVO;
+        }
+
+        try {
+            InstitutoMeteorologia.getInstance().cambiaEstadoSensor(codigoEstacion, codigoSensor, estado);
+
+            System.out.println("> Estado del sensor "
+                    + codigoSensor
+                    + " actualizado a "
+                    + estado);
+
+        } catch (MeteorologiaException e) {
+            mostrarError(e);
+        }
+    }
 
 private void menuListados() {
     int opcion = 0;
