@@ -282,16 +282,18 @@ private void menuListados() {
         System.out.println("3. Listar estaciones de comuna");
         System.out.println("4. Listar sensores de estacion");
         System.out.println("5. Listar mediciones de un sensor");
-        System.out.println("6. Salir del menu de listados");
-        System.out.print("Ingrese opcion: ");
-        opcion = sc.nextInt();
+        System.out.println("6. Resumen estadistico de un sensor");
+        System.out.println("7. Alertas de una estación");
+        System.out.println("8. Volver al menú principal");
 
-        while (opcion < 1 || opcion > 6) {
-            System.out.println("Opción invalida. Ingrese una opcion entre 1 y 6");
+        System.out.print("Ingrese opcion: ");
+        opcion = leerEntero();
+
+        while (opcion < 1 || opcion > 8) {
+            System.out.println("Opción invalida. Ingrese una opcion entre 1 y 8");
             System.out.print("Ingrese opcion:");
-            opcion = sc.nextInt();
+            opcion = leerEntero();
         }
-        sc.nextLine();
         switch ((opcion)) {
             case 1:
                 listarRegiones();
@@ -309,6 +311,12 @@ private void menuListados() {
                 listarMediciones();
                 break;
             case 6:
+                listarResumenMediciones();
+                break;
+            case 7:
+                listarAlertas();
+                break;
+            case 8:
                 break;
         }
     }
