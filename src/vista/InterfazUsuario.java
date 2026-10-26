@@ -110,12 +110,9 @@ private void crearRegion() {
     String nombre = leerTexto();
     try {
         InstitutoMeteorologia.getInstance().creaRegion(codigo, nombre);
-
-
-    if (instituto.creaRegion(codigo, nombre)) {
-        System.out.println("Región creada correctamente");
-    } else {
-        System.out.println("No se pudo crear la región");
+        System.out.println("> Region creada correctamente.");
+    } catch (MeteorologiaException e) {
+        mostrarError(e);
     }
 }
 
@@ -123,20 +120,18 @@ private void crearComuna() {
     System.out.println();
     System.out.println("CREAR COMUNA");
     System.out.print("Codigo de región: ");
-    int codigoRegion = sc.nextInt();
-
+    int codigoRegion = leerEntero();
 
     System.out.print("Codigo de comuna: ");
-    int codigo = sc.nextInt();
-    sc.nextLine();
+    int codigo = leerEntero();
 
     System.out.print("Nombre: ");
-    String nombre = sc.nextLine();
-
-    if (instituto.creaComuna(codigo, nombre, codigoRegion)) {
-        System.out.println("Comuna creada correctamente");
-    } else {
-        System.out.println("No se pudo crear la comuna");
+    String nombre = leerTexto();
+    try {
+        InstitutoMeteorologia.getInstance().creaComuna(codigo, nombre, codigoRegion);
+        System.out.println("> Comuna creada correctamente.");
+    } catch (MeteorologiaException e) {
+        mostrarError(e);
     }
 }
 
@@ -146,33 +141,34 @@ private void crearEstacionMeteorologica() {
     System.out.println("-------------------------------");
 
     System.out.print("Código de estación: ");
-    String codigo = sc.nextLine();
+    String codigo = leerTexto();
 
     System.out.print("Nombre: ");
-    String nombre = sc.nextLine();
+    String nombre = leerTexto();
 
 
     System.out.print("Longitud: ");
-    float longitud = sc.nextFloat();
+    float longitud = leerFloat();
 
     System.out.print("Latitud: ");
-    float latitud = sc.nextFloat();
+    float latitud = leerFloat();
 
     System.out.print("Altitud (m): ");
-    float altitud = sc.nextFloat();
+    float altitud = leerFloat();
 
     System.out.print("Codigo de región: ");
-    int codigoRegion = sc.nextInt();
+    int codigoRegion = leerEntero();
 
     System.out.print("Código de comuna: ");
-    int codigoComuna = sc.nextInt();
-    sc.nextLine();
+    int codigoComuna = leerEntero();
+    try {
+        InstitutoMeteorologia.getInstance().creaEstacion(
+                codigo, nombre, longitud, latitud,
+                altitud, codigoRegion, codigoComuna);
 
-    if (instituto.creaEstacion(codigo, nombre, longitud,
-            latitud, altitud, codigoRegion, codigoComuna)) {
-        System.out.println("> Estación meteorologica creada correctamente");
-    } else {
-        System.out.println("> No se pudo crear la estación meteorologica");
+        System.out.println("> Estación meteorologica creada correctamente.");
+    } catch (MeteorologiaException e) {
+        mostrarError(e);
     }
 }
 
@@ -181,16 +177,14 @@ private void instalarSensor() {
     System.out.println("INSTALAR SENSOR");
     System.out.println("-----------------");
     System.out.print("Código de estación: ");
-    String codigoEstacion = sc.nextLine();
+    String codigoEstacion = leerTexto();
 
     System.out.print("Tipo [1 Temp. 2 Hum. 3 Presión. 4 Viento. 5 Precip.] : ");
-    int opcionTipo = sc.nextInt();
+    int opcionTipo = leerEntero();
     while (opcionTipo < 1 || opcionTipo > 5) {
         System.out.print("Tipo invalido. Ingrese un número entre 1 y 5");
-        opcionTipo = sc.nextInt();
+        opcionTipo = leerEntero();
     }
-    sc.nextLine();
-
     TipoSensor tipo = null;
 
     switch (opcionTipo) {
@@ -215,18 +209,19 @@ private void instalarSensor() {
     }
 
     System.out.print("Código de sensor: ");
-    String codigo = sc.nextLine();
+    String codigo = leerTexto();
 
     System.out.print("Marca: ");
-    String marca = sc.nextLine();
+    String marca = leerTexto();
 
     System.out.print("Modelo: ");
-    String modelo = sc.nextLine();
+    String modelo = leerTexto();
+    try {
+        InstitutoMeteorologia.getInstance().instalaSensor(codigo,marca,modelo,tipo,codigoEstacion);
+        System.out.println("> Sensor instalado correctamente.");
 
-    if (instituto.instalaSensor(codigo, marca, modelo, tipo, codigoEstacion)) {
-        System.out.println(">Sensor instalado correctamente");
-    } else {
-        System.out.println("No se pudo instalar el sensor");
+    } catch (MeteorologiaException e) {
+        mostrarError(e);
     }
 }
 
@@ -235,35 +230,43 @@ private void registrarMedicion() {
     System.out.println("REGISTRAR MEDICIÓN");
     System.out.println("------------------");
     System.out.print("Código de estación: ");
-    String codigoEstacion = sc.nextLine();
+    String codigoEstacion = leerTexto();
 
     System.out.print("Código de sensor: ");
-    String codigoSensor = sc.nextLine();
+    String codigoSensor = leerTexto();
 
     System.out.print("Fecha y hora [dd/MM/yyyy HH:mm]: ");
-    String fechaTexto = sc.nextLine();
-    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    LocalDateTime fechaHora = LocalDateTime.parse(fechaTexto, formato);
+    LocalDateTime fechaHora = leerFechaHora();
 
-    String unidad = "";
-    String[][] sensores = instituto.listaSensores(codigoEstacion);
-    for (String[] sensor : sensores) {
-        if (sensor[0].equals(codigoSensor)) {
-            unidad = sensor[4];
+    try {
+        String unidad = "";
+
+        String[][] sensores =
+                InstitutoMeteorologia.getInstance()
+                        .listaSensores(codigoEstacion);
+
+        for (String[] sensor : sensores) {
+            if (sensor[0].equals(codigoSensor)) {
+                unidad = sensor[4];
+            }
         }
-    }
-    if (unidad.isEmpty()) {
-        System.out.print("Valor: ");
-    } else {
-        System.out.print("Valor [" + unidad + "] :");
-    }
-    float valor = sc.nextFloat();
-    sc.nextLine();
 
-    if (instituto.registraMedicion(fechaHora, valor, codigoEstacion, codigoSensor)) {
-        System.out.println(">Medición registrada correctamente");
-    } else {
-        System.out.println(">No se pudo registrar la medición");
+        if (unidad.isEmpty()) {
+            System.out.print("Valor: ");
+        } else {
+            System.out.print(
+                    "Valor [" + unidad + "]: "
+            );
+        }
+
+        float valor = leerFloat();
+
+        InstitutoMeteorologia.getInstance().registraMedicion(
+                fechaHora, valor, codigoEstacion, codigoSensor);
+
+        System.out.println("> Medición registrada correctamente.");
+    } catch (MeteorologiaException e) {
+        mostrarError(e);
     }
 }
 
