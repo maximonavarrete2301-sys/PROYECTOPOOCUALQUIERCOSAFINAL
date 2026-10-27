@@ -2,6 +2,7 @@ package controlador;//Maximo Navarrete Fernandez
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -19,9 +20,11 @@ import java.time.format.ResolverStyle;
 
 public class InstitutoMeteorologia {
     private static InstitutoMeteorologia instancia ;
-    private ArrayList<Region> regiones = new ArrayList<>();
-    private ArrayList<EstacionMeteorologica> estaciones = new ArrayList<>();
-    private InstitutoMeteorologia(){
+    private ArrayList<Region> regiones;
+    private ArrayList<EstacionMeteorologica> estaciones;
+    private InstitutoMeteorologia() {
+        regiones = new ArrayList<>();
+        estaciones = new ArrayList<>();
     }
     public static InstitutoMeteorologia getInstance() {
         if (instancia == null) {
@@ -359,11 +362,11 @@ public class InstitutoMeteorologia {
             );
         }
 
-        String[] lineasRegiones;
-        String[] lineasComunas;
-        String[] lineasEstaciones;
-        String[] lineasSensores;
-        String[] lineasMediciones;
+        List<String[]> lineasRegiones;
+        List<String[]> lineasComunas;
+        List<String[]> lineasEstaciones;
+        List<String[]> lineasSensores;
+        List<String[]> lineasMediciones;
 
         try {
             lineasRegiones = PersistenciaTexto.leeRegistros("regiones.txt");
@@ -382,17 +385,23 @@ public class InstitutoMeteorologia {
 
         try {
 
-            for (int i = 0; i < lineasRegiones.length; i++) {
+            for (int i = 0; i < lineasRegiones.size(); i++) {
 
                 String[] campos;
                 int codigo;
                 String nombre;
 
                 try {
-                    campos = separarCampos(lineasRegiones[i], 2);
+                    campos =
+                            validarCampos(
+                                    lineasRegiones.get(i),
+                                    2
+                            );
 
                     codigo =
-                            Integer.parseInt(campos[0].trim());
+                            Integer.parseInt(
+                                    campos[0].trim()
+                            );
 
                     nombre =
                             campoTexto(campos[1]);
@@ -406,7 +415,10 @@ public class InstitutoMeteorologia {
                 }
 
                 try {
-                    creaRegion(codigo, nombre);
+                    creaRegion(
+                            codigo,
+                            nombre
+                    );
 
                 } catch (MeteorologiaException e) {
 
@@ -418,7 +430,7 @@ public class InstitutoMeteorologia {
                 }
             }
 
-            for (int i = 0; i < lineasComunas.length; i++) {
+            for (int i = 0; i < lineasComunas.size(); i++) {
 
                 String[] campos;
                 int codigoRegion;
@@ -427,16 +439,11 @@ public class InstitutoMeteorologia {
 
                 try {
                     campos =
-                            separarCampos(lineasComunas[i], 3);
+                            validarCampos( lineasComunas.get(i),3);
 
-                    codigoRegion =
-                            Integer.parseInt(campos[0].trim());
-
-                    codigoComuna =
-                            Integer.parseInt(campos[1].trim());
-
-                    nombre =
-                            campoTexto(campos[2]);
+                    codigoRegion =Integer.parseInt(campos[0].trim());
+                    codigoComuna =Integer.parseInt(campos[1].trim());
+                    nombre = campoTexto(campos[2]);
 
                 } catch (RuntimeException e) {
 
@@ -463,7 +470,7 @@ public class InstitutoMeteorologia {
                 }
             }
 
-            for (int i = 0; i < lineasEstaciones.length; i++) {
+            for (int i = 0; i < lineasEstaciones.size(); i++) {
 
                 String[] campos;
 
@@ -478,25 +485,48 @@ public class InstitutoMeteorologia {
                 int codigoComuna;
 
                 try {
-                    campos =separarCampos(lineasEstaciones[i],7);
+                    campos =
+                            validarCampos(
+                                    lineasEstaciones.get(i),
+                                    7
+                            );
 
-                    codigo = campoTexto(campos[0]);
+                    codigo =
+                            campoTexto(campos[0]);
 
-                    nombre = campoTexto(campos[1]);
+                    nombre =
+                            campoTexto(campos[1]);
 
-                    longitud =Float.parseFloat(campos[2].trim().replace(',', '.')
-                    );
+                    longitud =
+                            Float.parseFloat(
+                                    campos[2]
+                                            .trim()
+                                            .replace(',', '.')
+                            );
 
                     latitud =
                             Float.parseFloat(
-                                    campos[3].trim().replace(',', '.')
+                                    campos[3]
+                                            .trim()
+                                            .replace(',', '.')
                             );
 
-                    altitud =Float.parseFloat(campos[4].trim().replace(',', '.'));
+                    altitud =
+                            Float.parseFloat(
+                                    campos[4]
+                                            .trim()
+                                            .replace(',', '.')
+                            );
 
-                    codigoRegion =Integer.parseInt(campos[5].trim());
+                    codigoRegion =
+                            Integer.parseInt(
+                                    campos[5].trim()
+                            );
 
-                    codigoComuna =Integer.parseInt(campos[6].trim());
+                    codigoComuna =
+                            Integer.parseInt(
+                                    campos[6].trim()
+                            );
 
                     validarFloat(longitud);
                     validarFloat(latitud);
@@ -532,30 +562,32 @@ public class InstitutoMeteorologia {
             }
 
             String[][] datosMediciones =
-                    new String[lineasMediciones.length][4];
+                    new String[lineasMediciones.size()][4];
 
             LocalDateTime[] fechasMediciones =
-                    new LocalDateTime[lineasMediciones.length];
+                    new LocalDateTime[lineasMediciones.size()];
 
             float[] valoresMediciones =
-                    new float[lineasMediciones.length];
+                    new float[lineasMediciones.size()];
 
             boolean[] medicionesProcesadas =
-                    new boolean[lineasMediciones.length];
+                    new boolean[lineasMediciones.size()];
 
             DateTimeFormatter formatoFecha =
                     DateTimeFormatter
-                            .ofPattern("dd/MM/uuuu HH:mm")
+                            .ofPattern(
+                                    "dd/MM/uuuu HH:mm"
+                            )
                             .withResolverStyle(
                                     ResolverStyle.STRICT
                             );
 
-            for (int i = 0; i < lineasMediciones.length; i++) {
+            for (int i = 0; i < lineasMediciones.size(); i++) {
 
                 try {
                     String[] campos =
-                            separarCampos(
-                                    lineasMediciones[i],
+                            validarCampos(
+                                    lineasMediciones.get(i),
                                     4
                             );
 
@@ -583,7 +615,9 @@ public class InstitutoMeteorologia {
                                             .replace(',', '.')
                             );
 
-                    validarFloat(valoresMediciones[i]);
+                    validarFloat(
+                            valoresMediciones[i]
+                    );
 
                 } catch (RuntimeException e) {
 
@@ -595,36 +629,41 @@ public class InstitutoMeteorologia {
             }
 
             String[][] datosSensores =
-                    new String[lineasSensores.length][6];
+                    new String[lineasSensores.size()][6];
 
             TipoSensor[] tiposSensores =
-                    new TipoSensor[lineasSensores.length];
+                    new TipoSensor[lineasSensores.size()];
 
             Estado[] estadosSensores =
-                    new Estado[lineasSensores.length];
+                    new Estado[lineasSensores.size()];
 
-            for (int i = 0; i < lineasSensores.length; i++) {
+            for (int i = 0; i < lineasSensores.size(); i++) {
 
                 try {
                     String[] campos =
-                            separarCampos(
-                                    lineasSensores[i],
+                            validarCampos(
+                                    lineasSensores.get(i),
                                     6
                             );
 
                     for (int j = 0; j < campos.length; j++) {
+
                         datosSensores[i][j] =
-                                campoTexto(campos[j]);
+                                campoTexto(
+                                        campos[j]
+                                );
                     }
 
                     tiposSensores[i] =
                             TipoSensor.valueOf(
-                                    datosSensores[i][2].toUpperCase()
+                                    datosSensores[i][2]
+                                            .toUpperCase()
                             );
 
                     estadosSensores[i] =
                             Estado.valueOf(
-                                    datosSensores[i][5].toUpperCase()
+                                    datosSensores[i][5]
+                                            .toUpperCase()
                             );
 
                 } catch (RuntimeException e) {
@@ -671,10 +710,14 @@ public class InstitutoMeteorologia {
                     );
                 }
 
-                for (int j = 0; j < datosMediciones.length; j++) {
+                for (int j = 0;
+                     j < datosMediciones.length;
+                     j++) {
 
-                    if (datosMediciones[j][0].equals(codigoEstacion)
-                            && datosMediciones[j][1].equals(codigoSensor)) {
+                    if (datosMediciones[j][0]
+                            .equals(codigoEstacion)
+                            && datosMediciones[j][1]
+                            .equals(codigoSensor)) {
 
                         try {
                             registraMedicion(
@@ -684,7 +727,8 @@ public class InstitutoMeteorologia {
                                     codigoSensor
                             );
 
-                            medicionesProcesadas[j] = true;
+                            medicionesProcesadas[j] =
+                                    true;
 
                         } catch (MeteorologiaException e) {
 
@@ -698,7 +742,11 @@ public class InstitutoMeteorologia {
                 }
 
                 try {
-                    cambiaEstadoSensor(codigoEstacion,codigoSensor, Estado.INACTIVO);
+                    cambiaEstadoSensor(
+                            codigoEstacion,
+                            codigoSensor,
+                            Estado.INACTIVO
+                    );
 
                 } catch (MeteorologiaException e) {
 
@@ -710,7 +758,9 @@ public class InstitutoMeteorologia {
                 }
             }
 
-            for (int i = 0; i < medicionesProcesadas.length; i++) {
+            for (int i = 0;
+                 i < medicionesProcesadas.length;
+                 i++) {
 
                 if (!medicionesProcesadas[i]) {
 
@@ -733,12 +783,19 @@ public class InstitutoMeteorologia {
                 }
             }
 
-            for (int i = 0; i < datosSensores.length; i++) {
+            for (int i = 0;
+                 i < datosSensores.length;
+                 i++) {
 
-                if (estadosSensores[i] == Estado.ACTIVO) {
+                if (estadosSensores[i]
+                        == Estado.ACTIVO) {
 
                     try {
-                        cambiaEstadoSensor(datosSensores[i][0], datosSensores[i][1],Estado.ACTIVO);
+                        cambiaEstadoSensor(
+                                datosSensores[i][0],
+                                datosSensores[i][1],
+                                Estado.ACTIVO
+                        );
 
                     } catch (MeteorologiaException e) {
 
@@ -775,7 +832,11 @@ public class InstitutoMeteorologia {
         ArrayList<String> lineasEstaciones = new ArrayList<>();
         ArrayList<String> lineasSensores = new ArrayList<>();
         ArrayList<String> lineasMediciones = new ArrayList<>();
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern( "dd/MM/yyyy HH:mm");
+
+        DateTimeFormatter formato =
+                DateTimeFormatter.ofPattern(
+                        "dd/MM/yyyy HH:mm"
+                );
 
         String separador = PersistenciaTexto.SEPARADOR;
 
@@ -787,18 +848,21 @@ public class InstitutoMeteorologia {
                             + region.getNombre()
             );
 
-            for (Comuna comuna : region.getComunas()) {
+            for (Comuna comuna :
+                    region.getComunas()) {
 
-                lineasComunas.add(region.getCodigo()
-                        + separador
-                        + comuna.getCodigo()
-                        + separador
-                        + comuna.getNombre()
+                lineasComunas.add(
+                        region.getCodigo()
+                                + separador
+                                + comuna.getCodigo()
+                                + separador
+                                + comuna.getNombre()
                 );
             }
         }
 
-        for (EstacionMeteorologica estacion : estaciones) {
+        for (EstacionMeteorologica estacion :
+                estaciones) {
 
             Comuna comuna =
                     estacion.getComuna();
@@ -813,12 +877,14 @@ public class InstitutoMeteorologia {
                             separador
                     )
                             + separador
-                            + comuna.getRegion().getCodigo()
+                            + comuna.getRegion()
+                            .getCodigo()
                             + separador
                             + comuna.getCodigo()
             );
 
-            for (Sensor sensor : estacion.getSensores()) {
+            for (Sensor sensor :
+                    estacion.getSensores()) {
 
                 lineasSensores.add(
                         estacion.getCodigo()
@@ -842,7 +908,8 @@ public class InstitutoMeteorologia {
                                     + separador
                                     + sensor.getCodigo()
                                     + separador
-                                    + medicion.getFechaHora()
+                                    + medicion
+                                    .getFechaHora()
                                     .format(formato)
                                     + separador
                                     + Float.toString(
@@ -853,31 +920,33 @@ public class InstitutoMeteorologia {
             }
         }
 
-        PersistenciaTexto.escribeRegistros( "regiones.txt",lineasRegiones.toArray(new String[0]));
+        PersistenciaTexto.escribeRegistros("regiones.txt",
+                lineasRegiones);
 
-        PersistenciaTexto.escribeRegistros( "comunas.txt",
-                lineasComunas.toArray(new String[0]));
+        PersistenciaTexto.escribeRegistros("comunas.txt",
+                lineasComunas);
 
         PersistenciaTexto.escribeRegistros("estaciones.txt",
-                lineasEstaciones.toArray(new String[0]));
+                lineasEstaciones);
 
         PersistenciaTexto.escribeRegistros("sensores.txt",
-                lineasSensores.toArray(new String[0]));
+                lineasSensores);
 
         PersistenciaTexto.escribeRegistros("mediciones.txt",
-                lineasMediciones.toArray(new String[0]));
+                lineasMediciones);
     }
 
     private String formatoValor(float valor) {
         return String.format(Locale.US, "%.1f", valor);
     }
-    private String[] separarCampos(String linea, int cantidadEsperada) {
-
-        String[] campos = linea.split(Pattern.quote(PersistenciaTexto.SEPARADOR),-1);
+    private String[] validarCampos(
+            String[] campos,
+            int cantidadEsperada) {
 
         if (campos.length != cantidadEsperada) {
             throw new IllegalArgumentException();
         }
+
         return campos;
     }
 
