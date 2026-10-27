@@ -1,7 +1,12 @@
+package modelo;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import controlador.MeteorologiaException;
 
 public abstract class Sensor {
     private String codigo;
@@ -30,17 +35,86 @@ public abstract class Sensor {
         this.estado = estado;
     }
 
-    public boolean addMedicion(LocalDateTime fechaHora, float valor) {
-        if (this.estado == Estado.ACTIVO && esValorAdmisible(valor)) {
-            for (Medicion m : mediciones) {
-                if (m.getFechaHora().equals(fechaHora)) {
-                    return false;
-                }
-            }
-            mediciones.add(new Medicion(fechaHora, valor));
-            return true;
+    public void addMedicion(
+            LocalDateTime fechaHora,
+            float valor)
+            throws MeteorologiaException {
+
+        if (estado != Estado.ACTIVO) {
+
+            throw new MeteorologiaException(
+                    "El sensor "
+                            + codigo
+                            + " no está activo."
+            );
         }
-        return false;
+
+        if (!esValorAdmisible(valor)) {
+
+            throw new MeteorologiaException(
+                    "El valor "
+                            + String.format(
+                            Locale.US,
+                            "%.1f",
+                            valor
+                    )
+                            + " "
+                            + getUnidad()
+                            + " no es admisible para un sensor de tipo "
+                            + getTipo()
+                            + "."
+            );
+        }
+
+        for (Medicion medicion : mediciones) {
+
+            if (medicion.getFechaHora()
+                    .equals(fechaHora)) {
+
+                DateTimeFormatter formato =
+                        DateTimeFormatter.ofPattern(
+                                "dd/MM/yyyy HH:mm"
+                        );
+
+                String fecha =
+                        fechaHora.format(formato);
+
+                throw new MeteorologiaException(
+                        "El sensor "
+                                + codigo
+                                + " ya registra una medición el "
+                                + fecha.substring(0, 10)
+                                + " a las "
+                                + fecha.substring(11)
+                                + "."
+                );
+            }
+        }
+
+        Medicion nueva =
+                new Medicion(fechaHora, valor);
+
+        int posicion =
+                mediciones.size();
+
+        while (posicion > 0
+                && mediciones
+                .get(posicion - 1)
+                .getFechaHora()
+                .isAfter(fechaHora)) {
+
+            posicion--;
+        }
+
+        mediciones.add(
+                posicion,
+                nueva
+        );
+    }
+    public Medicion[] getMediciones() {
+        return mediciones.toArray(
+                new Medicion[0]
+        );
     }
 
     public Medicion getLastMedicion(){
