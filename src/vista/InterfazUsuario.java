@@ -694,13 +694,14 @@ private void listarComunas() {
             }
 
             System.out.printf(
-                    "%-12s %-8s %-12s %-25s %-12s %-10s %-10s%n",
-                    "FECHA", "HORA", "SENSOR", "FENOMENO", "VALOR", "UNIDAD", "NIVEL");
+                    "%-12s %-8s %-12s %-25s %-18s %-10s%n",
+                    "FECHA", "HORA", "SENSOR", "FENÓMENO", "VALOR", "NIVEL");
 
             for (String[] fila : datos) {
                 System.out.printf(
-                        "%-12s %-8s %-12s %-25s %-12s %-10s %-10s%n",
-                        fila[0], fila[1], fila[2], fila[3], fila[4], fila[5], fila[6]);
+                        "%-12s %-8s %-12s %-25s %-18s %-10s%n",
+                        fila[0], fila[1], fila[2], fila[3],
+                        fila[4] + " " + fila[5], fila[6]);
             }
 
         } catch (MeteorologiaException e) {
