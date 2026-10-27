@@ -308,11 +308,62 @@ private void registrarMedicion() {
             mostrarError(e);
         }
     }
+    private void cargarDatos() {
+        System.out.println();
+        System.out.println("CARGAR DATOS");
+        System.out.println("------------");
+
+        try {
+            InstitutoMeteorologia.getInstance().cargaDatos();
+            System.out.println("> Datos cargados correctamente desde la carpeta datos/.");
+
+        } catch (MeteorologiaException e) {
+            mostrarError(e);
+        }
+    }
+    private void guardarDatos() {
+        System.out.println();
+        System.out.println("GUARDAR DATOS");
+        System.out.println("-------------");
+
+        try {
+            InstitutoMeteorologia.getInstance().guardaDatos();
+
+            System.out.println("> Datos guardados correctamente en la carpeta datos/.");
+
+        } catch (MeteorologiaException e) {
+            mostrarError(e);
+        }
+    }
+    private void salir() {
+        System.out.print(
+                "¿Desea guardar los datos antes de salir? [S/N]: ");
+
+        String respuesta = leerSiNo();
+        if (respuesta.equals("S")) {
+
+            try {
+                InstitutoMeteorologia.getInstance().guardaDatos();
+
+                System.out.println("> Datos guardados correctamente en la carpeta datos/.");
+                System.out.println("> Fin del programa.");
+                System.exit(0);
+
+            } catch (MeteorologiaException e) {
+                mostrarError(e);
+            }
+
+        } else {
+            System.out.println("> Fin del programa");
+            System.exit(0);
+        }
+    }
+
 
 private void menuListados() {
     int opcion = 0;
 
-    while (opcion != 6) {
+    while (opcion != 8) {
         System.out.println();
         System.out.println("GENERAR LISTADOS");
         System.out.println("----------------");
