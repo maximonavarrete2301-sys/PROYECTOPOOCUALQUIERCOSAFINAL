@@ -1,16 +1,5 @@
 package modelo;
 
-public class ResumenMediciones {
-    private final int cantidad;
-    private final float promedio;
-    private final Medicion minimo;
-    private final Medicion maximo;
-    //ayuda .·´¯`(>▂<)´¯`·. .·´¯`(>▂<)´¯`·
-
-
-
-    package modelo;
-
     public class ResumenMediciones {
 
         private final int cantidad;
