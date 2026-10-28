@@ -1,4 +1,9 @@
+package modelo;
+
+import controlador.MeteorologiaException;
+
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Region {
     private int codigo;
@@ -19,24 +24,26 @@ public class Region {
         return nombre;
     }
 
-    public boolean addComuna(int cod, String nom){
+    public void addComuna(int cod, String nom) throws MeteorologiaException{
         for(Comuna comuna : comunas){
-            if(comuna.getCodigo() == cod || comuna.getNombre().equalsIgnoreCase(nom)){
-                return false;
+            if(comuna.getCodigo() == cod){
+                throw new MeteorologiaException("La región " + nombre + " ya tiene una comuna con el código " + cod + ".");
+            }
+            if (comuna.getNombre().equalsIgnoreCase(nom)){
+                throw new MeteorologiaException("La región " + nombre + " ya tiene una comuna con el nombre " + nom + ".");
             }
         }
         Comuna nvaComuna = new Comuna(cod, nom, this);
         comunas.add(nvaComuna);
-        return true;
     }
 
-    public Comuna findComunaById(int codigo){
+    public Optional<Comuna> findComunaById(int codigo){
         for(Comuna comuna : comunas){
             if(comuna.getCodigo() == codigo){
-                return comuna;
+                return Optional.of(comuna);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public Comuna[] getComunas(){

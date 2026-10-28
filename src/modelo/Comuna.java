@@ -1,4 +1,7 @@
+package modelo;
+
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Comuna {
     private int codigo;
@@ -21,23 +24,25 @@ public class Comuna {
         return nombre;
     }
 
+    public Region getRegion(){
+        return region;
+    }
+
     public void addEstacion(EstacionMeteorologica estacion){
         estaciones.add(estacion);
     }
 
-    public EstacionMeteorologica findEstacionById(String codigo){
+    public Optional<EstacionMeteorologica> findEstacionById(String codigo){
         for(EstacionMeteorologica estacion : estaciones){
-            String[] partes = estacion.toString().split("; ");
-
-            if(partes[0].equals(codigo)){
-                return estacion;
+            if (estacion.getCodigo().equals(codigo)) {
+                return Optional.of(estacion);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Region getRegion(){
-        return region;
+    public EstacionMeteorologica[] getEstaciones(){
+        return estaciones.toArray(new EstacionMeteorologica[0]);
     }
 
     public int getCantidadEstaciones(){
@@ -47,9 +52,7 @@ public class Comuna {
     public int getCantidadEstacionesActivas(){
         int cantEstacionesAct = 0;
         for(EstacionMeteorologica estacion : estaciones){
-            String[] partes = estacion.toString().split("; ");
-
-            if(partes[partes.length - 2].equals(Estado.ACTIVO.toString())){
+            if(estacion.getEstado() == Estado.ACTIVO){
                 cantEstacionesAct++;
             }
         }
