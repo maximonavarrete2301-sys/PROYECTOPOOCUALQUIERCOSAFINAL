@@ -1,3 +1,5 @@
+package modelo;
+
 public class ResumenMediciones {
     private final int cantidad;
     private final float promedio;

@@ -1,6 +1,8 @@
+package modelo;
+
 import java.util.Optional;
 
-public class SensorPrecipitacion extends Sensor implements Alertable{
+public class SensorPrecipitacion extends Sensor implements Alertable {
 
     public SensorPrecipitacion(String codigo, String marca, String modelo, EstacionMeteorologica estacion) {
         super(codigo, marca, modelo, estacion);
@@ -23,32 +25,29 @@ public class SensorPrecipitacion extends Sensor implements Alertable{
     }
 
     @Override
-    public Optional<NivelAlerta> evaluaAlerta(float valor){
+    public Optional<NivelAlerta> evaluaAlerta(float valor) {
 
-        if (valor >= 100.0f){
+        if (valor >= 60.0f) {
             return Optional.of(NivelAlerta.ALARMA);
 
-        } else if (valor >= 60.0f){
+        } else if (valor >= 40.0f) {
             return Optional.of(NivelAlerta.ALERTA);
 
-        } else if (valor >= 30.0f){
+        } else if (valor >= 20.0f) {
             return Optional.of(NivelAlerta.AVISO);
         }
-        return Optional.empty(); // Lluvia normal o nula
+
+        return Optional.empty();
     }
 
     @Override
-    public String getFenomeno(float valor){
+    public String getFenomeno(float valor) {
 
-        if (valor >= 60.0f) {
-            return "Lluvia torrencial";
-
-        } else if (valor >= 30.0f){
-            return "Lluvia fuerte";
+        if (valor >= 20.0f) {
+            return "Precipitación intensa";
         }
 
-        return "Normal";
+        return "";
     }
-
 
 }
