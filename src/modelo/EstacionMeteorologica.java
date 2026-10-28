@@ -142,7 +142,7 @@ public class EstacionMeteorologica {
         for (int i = 0; i < sensores.size(); i++) {
             Sensor sensor = sensores.get(i);
             resumenSensor[i][0] = sensor.getCodigo();
-            resumenSensor[i][1] = obtenerTipoSensor(sensor);
+            resumenSensor[i][1] = sensor.getTipo().toString();
             resumenSensor[i][2] = sensor.getMarca();
             resumenSensor[i][3] = sensor.getModelo();
             resumenSensor[i][4] = sensor.getUnidad();
@@ -207,24 +207,6 @@ public class EstacionMeteorologica {
         return codigo + "; " + nombre + "; " + "(" + latitud + "; " + longitud + "; " + altitud + ")" + ";" + estado + "; " + sensoresOperativos;
     }
 
-    private String obtenerTipoSensor(Sensor sensor) {
-        if (sensor instanceof SensorTemperatura) {
-            return "TEMPERATURA";
-        }
-        if (sensor instanceof SensorHumedad) {
-            return "HUMEDAD";
-        }
-        if (sensor instanceof SensorPresion) {
-            return "PRESION";
-        }
-        if (sensor instanceof SensorViento) {
-            return "VIENTO";
-        }
-        if (sensor instanceof SensorPrecipitacion) {
-            return "PRECIPITACION";
-        }
-        return "";
-    }
 }
 
 
