@@ -9,7 +9,7 @@ Integrantes:
 -
 Instrucciones de ejecución:
 -Clonar el repositorio y abrir proyecto.
--Iniciar el programa ejecutando la clase "InterfazUsuario".
+-Iniciar el programa ejecutando la clase "Main".
 -El programa mostrará el menú principal del proyecto, en donde se incluyen las siguientes funcionalidades:
 1. Crear región
 2. Crear comuna
@@ -17,5 +17,8 @@ Instrucciones de ejecución:
 4. Instalar sensor
 5. Registrar medición
 6. Generar listados
-7. Salir (Finaliza y cierra el programa) 
+7. Generar listados
+8. Cargar datos (Carga los archivos de la carpeta datos al proyecto) 
+9. Guardar datos (Guarda los datos en la carpeta datos) 
+10. Salir (Esta opción permite guardar los datos antes de cerrar el programa) 
 -
