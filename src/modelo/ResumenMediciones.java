@@ -54,6 +54,3 @@ package modelo;
             return maximo;
         }
     }
-
-
-}
