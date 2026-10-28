@@ -7,41 +7,38 @@ public class ResumenMediciones {
     private final Medicion maximo;
     //ayuda .·´¯`(>▂<)´¯`·. .·´¯`(>▂<)´¯`·
 
-    public ResumenMediciones(Medicion[] mediciones){
-        if (mediciones == null || mediciones.length == 0) {
-            this.cantidad = 0;
-            this.promedio = 0.0f;
-            this.minimo = null;
-            this.maximo = null;
-            return;
-        }
 
+
+    public ResumenMediciones(Medicion[] mediciones) {
+
+        if (mediciones == null || mediciones.length == 0) {
+            throw new IllegalArgumentException();
+        }
 
         this.cantidad = mediciones.length;
 
-        float suma = 0;
+        float suma = 0.0f;
+
         Medicion minTemp = mediciones[0];
         Medicion maxTemp = mediciones[0];
 
-        for ( Medicion m : mediciones){
-            if (m != null) {
-                suma += m.getValor();
-                if (m.getValor() < minTemp.getValor()){
-                    minTemp = m;
-                }
-                if (m.getValor() > maxTemp.getValor()){
-                    maxTemp = m;
-                }
+        for (Medicion medicion : mediciones) {
+
+            suma += medicion.getValor();
+
+            if (medicion.getValor() < minTemp.getValor()) {
+                minTemp = medicion;
+            }
+
+            if (medicion.getValor() > maxTemp.getValor()) {
+                maxTemp = medicion;
             }
         }
 
-        this.promedio = suma / this.cantidad;
+        this.promedio = suma / cantidad;
         this.minimo = minTemp;
         this.maximo = maxTemp;
     }
 
-    public int getCantidad(){ return cantidad; }
-    public float getPromedio(){ return promedio;}
-    public Medicion getMinimo() { return minimo;}
-    public Medicion getMaximo() { return maximo;}
+
 }
