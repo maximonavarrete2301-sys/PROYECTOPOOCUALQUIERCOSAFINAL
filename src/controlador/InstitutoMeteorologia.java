@@ -32,16 +32,77 @@ public class InstitutoMeteorologia {
         }
         return instancia;
     }
+    public boolean existenDatos() {
+        return !regiones.isEmpty();
+    }
 
+    public String[] getCodigosEstaciones() {
+        return estaciones.stream()
+                .map(EstacionMeteorologica::getCodigo)
+                .sorted()
+                .toArray(String[]::new);
+    }
+
+    public String[] getCodigosSensores(String codEstacion)
+            throws MeteorologiaException {
+
+        Optional<EstacionMeteorologica> estacion =
+                findEstacion(codEstacion);
+
+        if (estacion.isEmpty()) {
+            throw new MeteorologiaException(
+                    "No existe una estación con el código "
+                            + codEstacion + "."
+            );
+        }
+
+        return Arrays.stream(estacion.get().getSensores())
+                .map(Sensor::getCodigo)
+                .toArray(String[]::new);
+    }
+
+    public String[] getDatosSensor(
+            String codEstacion,
+            String codSensor)
+            throws MeteorologiaException {
+
+        Optional<EstacionMeteorologica> estacion =
+                findEstacion(codEstacion);
+
+        if (estacion.isEmpty()) {
+            throw new MeteorologiaException(
+                    "No existe una estación con el código "
+                            + codEstacion + "."
+            );
+        }
+
+        Optional<Sensor> sensor =
+                findSensor(codEstacion, codSensor);
+
+        if (sensor.isEmpty()) {
+            throw new MeteorologiaException(
+                    "No existe el sensor "
+                            + codSensor
+                            + " en la estación "
+                            + codEstacion
+                            + "."
+            );
+        }
+
+        return new String[]{
+                sensor.get().getTipo().toString(),
+                sensor.get().getUnidad(),
+                sensor.get().getEstado().toString()
+        };
+    }
     public void creaRegion(int codigo, String nombre)
-    throws MeteorologiaException {
+            throws MeteorologiaException {
         if (findRegion(codigo).isPresent()) {
             throw new MeteorologiaException("Ya existe una región con el codigo " + codigo );
         }
-        for (Region region : regiones) {
-            if (region.getNombre().equalsIgnoreCase(nombre)) {
-                throw new MeteorologiaException("Ya existe una región con el nomnbre " + nombre);
-            }
+        if (regiones.stream()
+                .anyMatch(region -> region.getNombre().equalsIgnoreCase(nombre))) {
+            throw new MeteorologiaException("Ya existe una región con el nomnbre " + nombre);
         }
         regiones.add(new Region(codigo, nombre));
     }
