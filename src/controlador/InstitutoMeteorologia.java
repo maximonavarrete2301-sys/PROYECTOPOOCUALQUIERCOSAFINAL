@@ -13,6 +13,7 @@ import modelo.Sensor;
 import modelo.TipoSensor;
 import modelo.EstacionMeteorologica;
 import java.time.format.ResolverStyle;
+import java.util.stream.Collectors;
 
 
 public class InstitutoMeteorologia {
@@ -380,6 +381,45 @@ public class InstitutoMeteorologia {
         return findEstacion(codigoEstacion)
                 .flatMap(estacion -> estacion.findSensorById(codigoSensor));
     }
+    public void cargaDatos()
+            throws MeteorologiaException {
+
+        if (!regiones.isEmpty() || !estaciones.isEmpty()) {
+            throw new MeteorologiaException(
+                    "La carga de datos solo puede realizarse cuando no existen datos registrados."
+            );
+        }
+
+        try {
+            Object objeto =
+                    PersistenciaObjetos.leeObjeto("meteorologia.dat");
+
+            if (!(objeto instanceof List)) {
+                throw new MeteorologiaException(
+                        "El archivo meteorologia.dat no contiene datos válidos del sistema."
+                );
+            }
+
+            regiones =
+                    new ArrayList<>((List<Region>) objeto);
+
+            estaciones =
+                    regiones.stream()
+                            .flatMap(region ->
+                                    Arrays.stream(region.getComunas()))
+                            .flatMap(comuna ->
+                                    Arrays.stream(comuna.getEstaciones()))
+                            .collect(
+                                    Collectors.toCollection(ArrayList::new)
+                            );
+
+        } catch (MeteorologiaException e) {
+            regiones.clear();
+            estaciones.clear();
+            throw e;
+        }
+    }
+
     public void importaDatosTexto()
             throws MeteorologiaException {
 
@@ -846,121 +886,16 @@ public class InstitutoMeteorologia {
     public void guardaDatos()
             throws MeteorologiaException {
 
-        if (regiones.isEmpty()
-                && estaciones.isEmpty()) {
-
+        if (!existenDatos()) {
             throw new MeteorologiaException(
                     "No existen datos para guardar."
             );
         }
 
-        ArrayList<String> lineasRegiones = new ArrayList<>();
-        ArrayList<String> lineasComunas = new ArrayList<>();
-        ArrayList<String> lineasEstaciones = new ArrayList<>();
-        ArrayList<String> lineasSensores = new ArrayList<>();
-        ArrayList<String> lineasMediciones = new ArrayList<>();
-
-        DateTimeFormatter formato =
-                DateTimeFormatter.ofPattern(
-                        "dd/MM/yyyy HH:mm"
-                );
-
-        String separador = PersistenciaTexto.SEPARADOR;
-
-        for (Region region : regiones) {
-
-            lineasRegiones.add(
-                    region.getCodigo()
-                            + separador
-                            + region.getNombre()
-            );
-
-            for (Comuna comuna :
-                    region.getComunas()) {
-
-                lineasComunas.add(
-                        region.getCodigo()
-                                + separador
-                                + comuna.getCodigo()
-                                + separador
-                                + comuna.getNombre()
-                );
-            }
-        }
-
-        for (EstacionMeteorologica estacion :
-                estaciones) {
-
-            Comuna comuna =
-                    estacion.getComuna();
-
-            lineasEstaciones.add(
-                    estacion.getCodigo()
-                            + separador
-                            + estacion.getNombre()
-                            + separador
-                            + posicionPersistencia(
-                            estacion,
-                            separador
-                    )
-                            + separador
-                            + comuna.getRegion()
-                            .getCodigo()
-                            + separador
-                            + comuna.getCodigo()
-            );
-
-            for (Sensor sensor :
-                    estacion.getSensores()) {
-
-                lineasSensores.add(
-                        estacion.getCodigo()
-                                + separador
-                                + sensor.getCodigo()
-                                + separador
-                                + sensor.getTipo()
-                                + separador
-                                + sensor.getMarca()
-                                + separador
-                                + sensor.getModelo()
-                                + separador
-                                + sensor.getEstado()
-                );
-
-                for (Medicion medicion :
-                        sensor.getMediciones()) {
-
-                    lineasMediciones.add(
-                            estacion.getCodigo()
-                                    + separador
-                                    + sensor.getCodigo()
-                                    + separador
-                                    + medicion
-                                    .getFechaHora()
-                                    .format(formato)
-                                    + separador
-                                    + Float.toString(
-                                    medicion.getValor()
-                            )
-                    );
-                }
-            }
-        }
-
-        PersistenciaTexto.escribeRegistros("regiones.txt",
-                lineasRegiones);
-
-        PersistenciaTexto.escribeRegistros("comunas.txt",
-                lineasComunas);
-
-        PersistenciaTexto.escribeRegistros("estaciones.txt",
-                lineasEstaciones);
-
-        PersistenciaTexto.escribeRegistros("sensores.txt",
-                lineasSensores);
-
-        PersistenciaTexto.escribeRegistros("mediciones.txt",
-                lineasMediciones);
+        PersistenciaObjetos.escribeObjeto(
+                "meteorologia.dat",
+                regiones
+        );
     }
 
     private String formatoValor(float valor) {
@@ -1029,29 +964,3 @@ public class InstitutoMeteorologia {
         );
     }
 
-    private String posicionPersistencia(
-            EstacionMeteorologica estacion,
-            String separador) {
-
-        String posicion =estacion.getPosicion().trim();
-
-        posicion =
-                posicion.replace("(", "")
-                        .replace(")", "")
-                        .replace("m", "")
-                        .trim();
-
-        String[] partes =posicion.split(";");
-
-        String latitud =partes[0].trim();
-        String longitud =partes[1].trim();
-        String altitud =partes[2].trim();
-
-        return longitud
-                + separador
-                + latitud
-                + separador
-                + altitud;
-    }
-
-}
