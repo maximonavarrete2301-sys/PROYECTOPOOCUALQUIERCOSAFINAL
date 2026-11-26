@@ -5,18 +5,18 @@ import java.util.Comparator;
 
 public class ResumenMediciones {
 
-    private final int cantidad;
-    private final float promedio;
-    private final Medicion minimo;
-    private final Medicion maximo;
+        private final int cantidad;
+        private final float promedio;
+        private final Medicion minimo;
+        private final Medicion maximo;
 
-    public ResumenMediciones(Medicion[] mediciones){
+        public ResumenMediciones(Medicion[] mediciones) {
 
-        if (mediciones == null || mediciones.length == 0) {
-            throw new IllegalArgumentException();
-        }
+            if (mediciones == null || mediciones.length == 0) {
+                throw new IllegalArgumentException();
+            }
 
-        this.cantidad = mediciones.length;
+            this.cantidad = mediciones.length;
 
         this.promedio = (float) Arrays.stream(mediciones)
                 .mapToDouble(Medicion::getValor)
@@ -36,19 +36,19 @@ public class ResumenMediciones {
                 .orElseThrow();
     }
 
-    public int getCantidad(){
-        return cantidad;
-    }
+        public int getCantidad() {
+            return cantidad;
+        }
 
-    public float getPromedio(){
-        return promedio;
-    }
+        public float getPromedio() {
+            return promedio;
+        }
 
-    public Medicion getMinimo(){
-        return minimo;
-    }
+        public Medicion getMinimo() {
+            return minimo;
+        }
 
-    public Medicion getMaximo() {
-        return maximo;
+        public Medicion getMaximo() {
+            return maximo;
+        }
     }
-}

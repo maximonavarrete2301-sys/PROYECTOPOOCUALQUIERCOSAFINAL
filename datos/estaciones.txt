@@ -1,0 +1,4 @@
+EST-NUBLE-01;Estación Chillán;-72.1034;-36.6066;124.0;16;16101
+EST-NUBLE-02;Estación Bulnes;-72.2980;-36.7420;95.0;16;16102
+EST-BIO-01;Estación Concepción;-73.0503;-36.8201;20.0;8;8101
+EST-BIO-02;Estación Talcahuano;-73.1169;-36.7249;15.0;8;8102

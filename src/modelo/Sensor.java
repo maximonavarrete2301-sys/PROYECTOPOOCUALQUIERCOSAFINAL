@@ -19,7 +19,7 @@ public abstract class Sensor implements Serializable {
     private Estado estado;
     private EstacionMeteorologica estacion;
     private List<Medicion> mediciones;
-
+//estacion meteorologica deja de dar error -  ignorar
 
     protected Sensor(String codigo, String marca, String modelo, EstacionMeteorologica estacion){
         this.codigo = codigo;
@@ -39,13 +39,12 @@ public abstract class Sensor implements Serializable {
         this.estado = estado;
     }
 
-
     public void addMedicion(
             LocalDateTime fechaHora,
             float valor)
             throws MeteorologiaException {
 
-        if (estado != Estado.ACTIVO){
+        if (estado != Estado.ACTIVO) {
 
             throw new MeteorologiaException(
                     "El sensor "
@@ -73,29 +72,50 @@ public abstract class Sensor implements Serializable {
 
         boolean existe = mediciones.stream()
                 .anyMatch(m -> m.getFechaHora().equals(fechaHora));
+        for (Medicion medicion : mediciones) {
 
         if (existe) {
+            if (medicion.getFechaHora()
+                    .equals(fechaHora)) {
 
-            DateTimeFormatter formato =
-                    DateTimeFormatter.ofPattern(
-                            "dd/MM/yyyy HH:mm"
-                    );
+                DateTimeFormatter formato =
+                        DateTimeFormatter.ofPattern(
+                                "dd/MM/yyyy HH:mm"
+                        );
 
-            String fecha =
-                    fechaHora.format(formato);
+                String fecha =
+                        fechaHora.format(formato);
 
-            throw new MeteorologiaException(
-                    "El sensor "
-                            + codigo
-                            + " ya registra una medición el "
-                            + fecha.substring(0, 10)
-                            + " a las "
-                            + fecha.substring(11)
-                            + "."
-            );
+                throw new MeteorologiaException(
+                        "El sensor "
+                                + codigo
+                                + " ya registra una medición el "
+                                + fecha.substring(0, 10)
+                                + " a las "
+                                + fecha.substring(11)
+                                + "."
+                );
+            }
+        }
+
+        Medicion nueva =
+                new Medicion(fechaHora, valor);
+
+        int posicion =
+                mediciones.size();
+
+        while (posicion > 0
+                && mediciones
+                .get(posicion - 1)
+                .getFechaHora()
+                .isAfter(fechaHora)) {
+
+            posicion--;
         }
 
         mediciones.add(
+                posicion,
+                nueva
                 new Medicion(fechaHora, valor)
         );
     }
@@ -121,11 +141,9 @@ public abstract class Sensor implements Serializable {
                 .toArray(Medicion[]::new);
     }
 
-
     // parte nueva del semsor
     public Optional<ResumenMediciones> getResumenBetween(LocalDateTime inicio, LocalDateTime fin) {
         Medicion[] filtradas = getMedicionesBetween(inicio, fin);
-
         if (filtradas.length == 0){
             return Optional.empty();
         }

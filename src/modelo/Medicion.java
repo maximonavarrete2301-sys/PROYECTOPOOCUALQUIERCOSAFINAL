@@ -11,7 +11,6 @@ public class Medicion implements Serializable {
     private final LocalDateTime fechaHora;
     private final float valor;
 
-
     //construcor kawai
     public Medicion(LocalDateTime fechaHora, float valor){
         this.fechaHora = fechaHora;
@@ -25,7 +24,6 @@ public class Medicion implements Serializable {
     public float getValor(){
         return valor;
     }
-
 
     @Override
     public boolean equals (Object obj){

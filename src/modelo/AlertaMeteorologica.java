@@ -12,7 +12,6 @@ public class AlertaMeteorologica implements Serializable {
     private final String fenomeno;
     private final Sensor sensor;
 
-
     public AlertaMeteorologica(LocalDateTime fechaHora, float valor, NivelAlerta nivel, String fenomeno, Sensor sensor) {
 
         this.fechaHora = fechaHora;
@@ -22,7 +21,7 @@ public class AlertaMeteorologica implements Serializable {
         this.sensor= sensor;
     }
 
-    //(￣(工)￣)
+        //(￣(工)￣)
     public LocalDateTime getFechaHora() {return fechaHora; }
     public float getValor(){return valor; }
     public NivelAlerta getNivel(){return nivel; }
