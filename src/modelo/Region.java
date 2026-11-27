@@ -2,10 +2,13 @@ package modelo;
 
 import controlador.MeteorologiaException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Region {
+public class Region implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int codigo;
     private String nombre;
     private ArrayList<Comuna> comunas;
@@ -25,25 +28,18 @@ public class Region {
     }
 
     public void addComuna(int cod, String nom) throws MeteorologiaException{
-        for(Comuna comuna : comunas){
-            if(comuna.getCodigo() == cod){
-                throw new MeteorologiaException("La región " + nombre + " ya tiene una comuna con el código " + cod + ".");
-            }
-            if (comuna.getNombre().equalsIgnoreCase(nom)){
-                throw new MeteorologiaException("La región " + nombre + " ya tiene una comuna con el nombre " + nom + ".");
-            }
+        if(comunas.stream().anyMatch(c -> c.getCodigo() == cod)){
+            throw new MeteorologiaException("La región " + nombre + " ya tiene una comuna con el código " + cod + ".");
+        }
+        if (comunas.stream().anyMatch(c -> c.getNombre().equalsIgnoreCase(nom))){
+            throw new MeteorologiaException("La región " + nombre + " ya tiene una comuna con el nombre " + nom + ".");
         }
         Comuna nvaComuna = new Comuna(cod, nom, this);
         comunas.add(nvaComuna);
     }
 
     public Optional<Comuna> findComunaById(int codigo){
-        for(Comuna comuna : comunas){
-            if(comuna.getCodigo() == codigo){
-                return Optional.of(comuna);
-            }
-        }
-        return Optional.empty();
+        return comunas.stream().filter(c -> c.getCodigo() == codigo).findFirst();
     }
 
     public Comuna[] getComunas(){
@@ -51,10 +47,6 @@ public class Region {
     }
 
     public int getCantidadEstaciones(){
-        int cantidad = 0;
-        for(Comuna comuna : comunas){
-            cantidad += comuna.getCantidadEstaciones();
-        }
-        return cantidad;
+       return comunas.stream().mapToInt(Comuna :: getCantidadEstaciones).sum();
     }
 }

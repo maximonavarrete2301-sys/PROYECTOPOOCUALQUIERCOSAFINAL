@@ -24,51 +24,19 @@ public class PersistenciaTexto {
 
     public static List<String[]> leeRegistros(String nombreArchivo) throws MeteorologiaException {
         List<String[]> registros = new ArrayList<>();
-        File archivo = new File("datos", nombreArchivo);
-        Scanner lector = null;
-
-        try {
-            lector = new Scanner(archivo, "UTF-8");
-            while (lector.hasNextLine()) {
-                String linea = lector.nextLine();
-                if (!linea.trim().isEmpty()) {
-                    String[] campos = linea.split(SEPARADOR, -1);
-                    registros.add(campos);
+        try (Scanner scan = new Scanner(new File("datos", nombreArchivo), "UTF-8")) {
+            while (scan.hasNextLine()) {
+                String linea = scan.nextLine();
+                if (!linea.isBlank()) {
+                    registros.add(linea.split(SEPARADOR, -1));
                 }
             }
-        } catch (FileNotFoundException e) {
-            throw new MeteorologiaException("No se encontró el archivo " + nombreArchivo + ".");
-
-        } catch (RuntimeException e) {
-            throw new MeteorologiaException("No fue posible leer el archivo " + nombreArchivo + ".");
-
-        } finally {
-            if (lector != null) {
-                lector.close();
+            if (scan.ioException() != null) {
+                throw new MeteorologiaException("No fue posible leer el archivo " + nombreArchivo);
             }
+        } catch (FileNotFoundException exception) {
+            throw new MeteorologiaException("No se encontró el archivo " + nombreArchivo);
         }
         return registros;
-    }
-
-    public static void escribeRegistros(String nombreArchivo, List<String> lineas) throws MeteorologiaException {
-        File carpeta = new File("datos");
-        if (!carpeta.exists()) {
-            carpeta.mkdirs();
-        }
-        File archivo = new File(carpeta, nombreArchivo);
-        PrintStream salida = null;
-
-        try {
-            salida = new PrintStream(archivo, "UTF-8");
-            for (String linea : lineas) {
-                salida.println(linea);
-            }
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            throw new MeteorologiaException("No fue posible escribir el archivo " + nombreArchivo + ".");
-        } finally {
-            if (salida != null) {
-                salida.close();
-            }
-        }
     }
 }

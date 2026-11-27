@@ -1,10 +1,13 @@
 package modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Medicion {
+public class Medicion implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final LocalDateTime fechaHora;
     private final float valor;
 

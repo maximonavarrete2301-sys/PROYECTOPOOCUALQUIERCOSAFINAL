@@ -1,0 +1,214 @@
+package vista;
+
+import controlador.InstitutoMeteorologia;
+import controlador.MeteorologiaException;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+
+public class VentanaListadoAlertas extends JDialog {
+    private JPanel contentPane;
+    private JComboBox<String> comboEstaciones;
+    private JTextField campoInicio;
+    private JTextField campoFin;
+    private JButton botonListar;
+    private JTable tablaAlertas;
+    private JLabel labelResumen;
+    private JButton botonCerrar;
+
+    private final InstitutoMeteorologia instituto;
+    private DefaultTableModel modeloTabla;
+
+    public VentanaListadoAlertas(JFrame owner) {
+        super(owner, "Alertas de una estación", true);
+
+        instituto = InstitutoMeteorologia.getInstance();
+
+        setContentPane(contentPane);
+        configurarTabla();
+        cargarEstaciones();
+        registrarEventos();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(owner);
+    }
+
+    private void configurarTabla() {
+        String[] columnas = {"Fecha", "Hora", "Sensor", "Fenómeno", "Valor", "Nivel"};
+
+        modeloTabla = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        };
+
+        tablaAlertas.setModel(modeloTabla);
+        tablaAlertas.getTableHeader().setReorderingAllowed(false);
+        tablaAlertas.getColumnModel().getColumn(0).setPreferredWidth(95);
+        tablaAlertas.getColumnModel().getColumn(1).setPreferredWidth(55);
+        tablaAlertas.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tablaAlertas.getColumnModel().getColumn(3).setPreferredWidth(170);
+        tablaAlertas.getColumnModel().getColumn(4).setPreferredWidth(95);
+        tablaAlertas.getColumnModel().getColumn(5).setPreferredWidth(75);
+    }
+
+    private void cargarEstaciones() {
+        String[] estaciones = instituto.getCodigosEstaciones();
+
+        for (String codigo : estaciones) {
+            comboEstaciones.addItem(codigo);
+        }
+    }
+
+    private void registrarEventos() {
+        botonListar.addActionListener(e -> listarAlertas());
+        botonCerrar.addActionListener(e -> dispose());
+    }
+
+    private void listarAlertas() {
+        modeloTabla.setRowCount(0);
+        labelResumen.setText(" ");
+
+        String codEstacion = (String) comboEstaciones.getSelectedItem();
+        String textoInicio = campoInicio.getText().trim();
+        String textoFin = campoFin.getText().trim();
+
+        if (codEstacion == null) {
+            mostrarError("No existen estaciones registradas.");
+            return;
+        }
+
+        if (textoInicio.isEmpty() || textoFin.isEmpty()) {
+            mostrarError("Debe ingresar la fecha y hora de inicio y de término.");
+            return;
+        }
+
+        DateTimeFormatter formato = DateTimeFormatter
+                .ofPattern("dd/MM/uuuu HH:mm")
+                .withResolverStyle(ResolverStyle.STRICT);
+
+        LocalDateTime inicio;
+        LocalDateTime fin;
+
+        try {
+            inicio = LocalDateTime.parse(textoInicio, formato);
+            fin = LocalDateTime.parse(textoFin, formato);
+
+        } catch (DateTimeParseException e) {
+            mostrarError("Las fechas y horas deben tener el formato dd/MM/yyyy HH:mm.");
+            return;
+        }
+
+        try {
+            String[][] alertas = instituto.listaAlertas(codEstacion, inicio, fin);
+
+            for (String[] alerta : alertas) {
+                modeloTabla.addRow(new String[]{
+                        alerta[0],
+                        alerta[1],
+                        alerta[2],
+                        alerta[3],
+                        alerta[4] + " " + alerta[5],
+                        alerta[6]
+                });
+            }
+
+            labelResumen.setText("Período: " + inicio.format(formato)
+                    + " a " + fin.format(formato) + " — "
+                    + alertas.length + (alertas.length == 1 ? " alerta." : " alertas."));
+
+            if (alertas.length == 0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "La estación " + codEstacion + " no registra alertas en el período indicado.",
+                        "Alertas de una estación",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+
+        } catch (MeteorologiaException e) {
+            mostrarError(e.getMessage());
+        }
+    }
+
+    private void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        contentPane = new JPanel();
+        contentPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 2, new Insets(10, 10, 10, 10), 8, 8));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 6, new Insets(6, 6, 6, 6), 6, 6));
+        contentPane.add(panel1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.setBorder(BorderFactory.createTitledBorder(null, "Criterios de búsqueda", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        final JLabel label1 = new JLabel();
+        label1.setText("Estación:");
+        panel1.add(label1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        comboEstaciones = new JComboBox();
+        panel1.add(comboEstaciones, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 5, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Inicio:");
+        panel1.add(label2, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        campoInicio = new JTextField();
+        campoInicio.setColumns(16);
+        campoInicio.setToolTipText("dd/MM/yyyy HH:mm");
+        panel1.add(campoInicio, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Fin:");
+        panel1.add(label3, new com.intellij.uiDesigner.core.GridConstraints(1, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        campoFin = new JTextField();
+        campoFin.setColumns(16);
+        campoFin.setToolTipText("dd/MM/yyyy HH:mm");
+        panel1.add(campoFin, new com.intellij.uiDesigner.core.GridConstraints(1, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        botonListar = new JButton();
+        botonListar.setText("Listar");
+        panel1.add(botonListar, new com.intellij.uiDesigner.core.GridConstraints(1, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
+        panel1.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(1, 5, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JScrollPane scrollPane1 = new JScrollPane();
+        contentPane.add(scrollPane1, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(700, 260), null, 0, false));
+        tablaAlertas = new JTable();
+        tablaAlertas.setFillsViewportHeight(true);
+        scrollPane1.setViewportView(tablaAlertas);
+        labelResumen = new JLabel();
+        labelResumen.setText(" ");
+        contentPane.add(labelResumen, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        botonCerrar = new JButton();
+        botonCerrar.setText("Cerrar");
+        contentPane.add(botonCerrar, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_EAST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
+    }
+}
