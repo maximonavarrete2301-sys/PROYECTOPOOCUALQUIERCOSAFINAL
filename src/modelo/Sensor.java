@@ -1,14 +1,18 @@
 package modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import controlador.MeteorologiaException;
 
-public abstract class Sensor {
+public abstract class Sensor implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String codigo;
     private String marca;
     private String modelo;
@@ -66,8 +70,11 @@ public abstract class Sensor {
             );
         }
 
+        boolean existe = mediciones.stream()
+                .anyMatch(m -> m.getFechaHora().equals(fechaHora));
         for (Medicion medicion : mediciones) {
 
+        if (existe) {
             if (medicion.getFechaHora()
                     .equals(fechaHora)) {
 
@@ -109,36 +116,29 @@ public abstract class Sensor {
         mediciones.add(
                 posicion,
                 nueva
+                new Medicion(fechaHora, valor)
         );
     }
-    public Medicion[] getMediciones() {
-        return mediciones.toArray(
-                new Medicion[0]
-        );
+
+
+    public Medicion[] getMediciones(){
+        return mediciones.stream()
+                .sorted(Comparator.comparing(Medicion::getFechaHora))
+                .toArray(Medicion[]::new);
     }
 
     public Medicion getLastMedicion(){
-        if (mediciones.isEmpty()) {
-            return null;
-        }
-        Medicion ultima = mediciones.get(0);
-        for (Medicion medicion : mediciones){
-            if (medicion.getFechaHora().isAfter(ultima.getFechaHora())){
-                ultima = medicion;
-            }
-        }
-        return ultima;
+        return mediciones.stream()
+                .max(Comparator.comparing(Medicion::getFechaHora))
+                .orElse(null);
     }
 
     public Medicion[] getMedicionesBetween(LocalDateTime inicio, LocalDateTime fin){
-        List<Medicion> resultado = new ArrayList<>();
-        for (Medicion m : mediciones){
-            LocalDateTime fh = m.getFechaHora();
-            if (!fh.isBefore(inicio) && !fh.isAfter(fin)){
-                resultado.add(m);
-            }
-        }
-        return resultado.toArray(new Medicion[0]);
+        return mediciones.stream()
+                .filter(m -> !m.getFechaHora().isBefore(inicio)
+                        && !m.getFechaHora().isAfter(fin))
+                .sorted(Comparator.comparing(Medicion::getFechaHora))
+                .toArray(Medicion[]::new);
     }
 
     // parte nueva del semsor

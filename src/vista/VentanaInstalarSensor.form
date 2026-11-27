@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="vista.VentanaInstalarSensor">
+  <grid id="10001" binding="contentPane" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="20" y="20" width="410" height="285"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="10002" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <text value="Estación:"/>
+        </properties>
+      </component>
+      <component id="10003" class="javax.swing.JComboBox" binding="comboEstaciones">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="10004" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <text value="Código del sensor:"/>
+        </properties>
+      </component>
+      <component id="10005" class="javax.swing.JTextField" binding="campoCodigo">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <columns value="16"/>
+        </properties>
+      </component>
+      <component id="10006" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <text value="Marca:"/>
+        </properties>
+      </component>
+      <component id="10007" class="javax.swing.JTextField" binding="campoMarca">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <columns value="16"/>
+        </properties>
+      </component>
+      <component id="10008" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <text value="Modelo:"/>
+        </properties>
+      </component>
+      <component id="10009" class="javax.swing.JTextField" binding="campoModelo">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <columns value="16"/>
+        </properties>
+      </component>
+      <grid id="1000a" binding="panelTipos" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+        <border type="etched" title="Tipo de sensor"/>
+        <children/>
+      </grid>
+      <grid id="1000b" layout-manager="FlowLayout" hgap="5" vgap="3" flow-align="2">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="4" left="7" bottom="4" right="7" weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="1000c" class="javax.swing.JButton" binding="instalarButton">
+            <constraints/>
+            <properties>
+              <text value="Instalar"/>
+            </properties>
+          </component>
+          <component id="1000d" class="javax.swing.JButton" binding="cancelarButton">
+            <constraints/>
+            <properties>
+              <text value="Cancelar"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
