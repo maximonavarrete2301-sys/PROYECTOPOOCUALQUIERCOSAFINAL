@@ -1,7 +1,9 @@
 package vista;
 //Maximo Navarrete Fernandez
+import javax.swing.SwingUtilities;
+
 public class Main {
-    public static void main(String[] args){
-        InterfazUsuario.getInstance().menuPrincipal();
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new VentanaPrincipal().setVisible(true));
     }
- }
+}
