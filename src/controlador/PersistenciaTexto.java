@@ -24,7 +24,7 @@ public class PersistenciaTexto {
 
     public static List<String[]> leeRegistros(String nombreArchivo) throws MeteorologiaException {
         List<String[]> registros = new ArrayList<>();
-        try (Scanner scan = new Scanner(new File(nombreArchivo), "UTF-8")) {
+        try (Scanner scan = new Scanner(new File("datos", nombreArchivo), "UTF-8")) {
             while (scan.hasNextLine()) {
                 String linea = scan.nextLine();
                 if (!linea.isBlank()) {
