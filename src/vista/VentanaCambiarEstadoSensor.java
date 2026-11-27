@@ -1,4 +1,4 @@
-package vista ;
+package vista;
 
 import controlador.InstitutoMeteorologia;
 import controlador.MeteorologiaException;
@@ -182,4 +182,52 @@ public class VentanaCambiarEstadoSensor extends JDialog {
         gbc6.anchor = GridBagConstraints.WEST;
         gbc6.insets = new Insets(4, 7, 4, 7);
         contentPane.add(componente6, gbc6);
-        labelEstadoActual = new JLabel();…
+        labelEstadoActual = new JLabel();
+        labelEstadoActual.setText("-");
+        GridBagConstraints gbc7 = new GridBagConstraints();
+        gbc7.gridx = 1;
+        gbc7.gridy = 2;
+        gbc7.anchor = GridBagConstraints.WEST;
+        gbc7.insets = new Insets(4, 7, 4, 7);
+        contentPane.add(labelEstadoActual, gbc7);
+        final JLabel componente8 = new JLabel();
+        componente8.setText("Nuevo estado:");
+        GridBagConstraints gbc8 = new GridBagConstraints();
+        gbc8.gridx = 0;
+        gbc8.gridy = 3;
+        gbc8.anchor = GridBagConstraints.WEST;
+        gbc8.insets = new Insets(4, 7, 4, 7);
+        contentPane.add(componente8, gbc8);
+        panelEstados = new JPanel();
+        panelEstados.setLayout(new FlowLayout(0, 5, 3));
+        GridBagConstraints gbc9 = new GridBagConstraints();
+        gbc9.gridx = 1;
+        gbc9.gridy = 3;
+        gbc9.anchor = GridBagConstraints.WEST;
+        gbc9.fill = GridBagConstraints.HORIZONTAL;
+        gbc9.weightx = 1.0;
+        gbc9.insets = new Insets(4, 7, 4, 7);
+        contentPane.add(panelEstados, gbc9);
+        final JPanel panel10 = new JPanel();
+        panel10.setLayout(new FlowLayout(2, 5, 3));
+        GridBagConstraints gbc10 = new GridBagConstraints();
+        gbc10.gridx = 0;
+        gbc10.gridy = 4;
+        gbc10.gridwidth = 2;
+        gbc10.anchor = GridBagConstraints.WEST;
+        gbc10.fill = GridBagConstraints.HORIZONTAL;
+        gbc10.weightx = 1.0;
+        gbc10.insets = new Insets(4, 7, 4, 7);
+        contentPane.add(panel10, gbc10);
+        cambiarEstadoButton = new JButton();
+        cambiarEstadoButton.setText("Cambiar estado");
+        panel10.add(cambiarEstadoButton);
+        cancelarButton = new JButton();
+        cancelarButton.setText("Cancelar");
+        panel10.add(cancelarButton);
+    }
+
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
+    }
+}
