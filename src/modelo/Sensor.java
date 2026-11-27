@@ -19,9 +19,8 @@ public abstract class Sensor implements Serializable {
     private Estado estado;
     private EstacionMeteorologica estacion;
     private List<Medicion> mediciones;
-//estacion meteorologica deja de dar error -  ignorar
 
-    protected Sensor(String codigo, String marca, String modelo, EstacionMeteorologica estacion){
+    protected Sensor(String codigo, String marca, String modelo, EstacionMeteorologica estacion) {
         this.codigo = codigo;
         this.marca = marca;
         this.modelo = modelo;
@@ -30,110 +29,68 @@ public abstract class Sensor implements Serializable {
         this.mediciones = new ArrayList<>();
     }
 
-    public String getCodigo(){ return codigo; }
-    public String getMarca(){ return marca; }
-    public String getModelo(){ return modelo; }
-    public Estado getEstado(){ return estado; }
+    public String getCodigo() { return codigo; }
+    public String getMarca() { return marca; }
+    public String getModelo() { return modelo; }
+    public Estado getEstado() { return estado; }
 
-    public void setEstado (Estado estado){
+    public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
-    public void addMedicion(
-            LocalDateTime fechaHora,
-            float valor)
+    public void addMedicion(LocalDateTime fechaHora, float valor)
             throws MeteorologiaException {
 
         if (estado != Estado.ACTIVO) {
-
             throw new MeteorologiaException(
-                    "El sensor "
-                            + codigo
-                            + " no está activo."
+                    "El sensor " + codigo + " no está activo."
             );
         }
 
         if (!esValorAdmisible(valor)) {
-
             throw new MeteorologiaException(
                     "El valor "
-                            + String.format(
-                            Locale.US,
-                            "%.1f",
-                            valor
-                    )
+                            + String.format(Locale.US, "%.1f", valor)
                             + " "
                             + getUnidad()
                             + " no es admisible para un sensor de tipo "
-                            + getTipo()
-                            + "."
+                            + getTipo() + "."
             );
         }
 
         boolean existe = mediciones.stream()
                 .anyMatch(m -> m.getFechaHora().equals(fechaHora));
-        for (Medicion medicion : mediciones) {
 
         if (existe) {
-            if (medicion.getFechaHora()
-                    .equals(fechaHora)) {
+            DateTimeFormatter formato =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-                DateTimeFormatter formato =
-                        DateTimeFormatter.ofPattern(
-                                "dd/MM/yyyy HH:mm"
-                        );
+            String fecha = fechaHora.format(formato);
 
-                String fecha =
-                        fechaHora.format(formato);
-
-                throw new MeteorologiaException(
-                        "El sensor "
-                                + codigo
-                                + " ya registra una medición el "
-                                + fecha.substring(0, 10)
-                                + " a las "
-                                + fecha.substring(11)
-                                + "."
-                );
-            }
+            throw new MeteorologiaException(
+                    "El sensor " + codigo
+                            + " ya registra una medición el "
+                            + fecha.substring(0, 10)
+                            + " a las "
+                            + fecha.substring(11) + "."
+            );
         }
-
-        Medicion nueva =
-                new Medicion(fechaHora, valor);
-
-        int posicion =
-                mediciones.size();
-
-        while (posicion > 0
-                && mediciones
-                .get(posicion - 1)
-                .getFechaHora()
-                .isAfter(fechaHora)) {
-
-            posicion--;
-        }
-
-        mediciones.add(
-                posicion,
-                nueva
-                new Medicion(fechaHora, valor)
-        );
+        mediciones.add(new Medicion(fechaHora, valor));
     }
 
-
-    public Medicion[] getMediciones(){
+    public Medicion[] getMediciones() {
         return mediciones.stream()
                 .sorted(Comparator.comparing(Medicion::getFechaHora))
                 .toArray(Medicion[]::new);
     }
 
-    public Medicion getLastMedicion(){
+    public Medicion getLastMedicion() {
         return mediciones.stream()
                 .max(Comparator.comparing(Medicion::getFechaHora))
                 .orElse(null);
     }
 
-    public Medicion[] getMedicionesBetween(LocalDateTime inicio, LocalDateTime fin){
+    public Medicion[] getMedicionesBetween(LocalDateTime inicio, LocalDateTime fin) {
         return mediciones.stream()
                 .filter(m -> !m.getFechaHora().isBefore(inicio)
                         && !m.getFechaHora().isAfter(fin))
@@ -141,16 +98,14 @@ public abstract class Sensor implements Serializable {
                 .toArray(Medicion[]::new);
     }
 
-    // parte nueva del semsor
     public Optional<ResumenMediciones> getResumenBetween(LocalDateTime inicio, LocalDateTime fin) {
         Medicion[] filtradas = getMedicionesBetween(inicio, fin);
-        if (filtradas.length == 0){
+        if (filtradas.length == 0) {
             return Optional.empty();
         }
         return Optional.of(new ResumenMediciones(filtradas));
     }
 
-    //meto abstrac :b
     public abstract TipoSensor getTipo();
     public abstract String getUnidad();
     public abstract boolean esValorAdmisible(float valor);
