@@ -10,13 +10,13 @@ public class ResumenMediciones {
         private final Medicion minimo;
         private final Medicion maximo;
 
-        public ResumenMediciones(Medicion[] mediciones) {
+    public ResumenMediciones(Medicion[] mediciones){
 
-            if (mediciones == null || mediciones.length == 0) {
-                throw new IllegalArgumentException();
-            }
+        if (mediciones == null || mediciones.length == 0) {
+            throw new IllegalArgumentException();
+        }
 
-            this.cantidad = mediciones.length;
+        this.cantidad = mediciones.length;
 
         this.promedio = (float) Arrays.stream(mediciones)
                 .mapToDouble(Medicion::getValor)
@@ -32,10 +32,10 @@ public class ResumenMediciones {
                 .orElseThrow();
 
         this.maximo = Arrays.stream(mediciones)
-                .max(comparador)
+                .max(Comparator.comparing(Medicion::getValor)
+                        .thenComparing(Medicion::getFechaHora, Comparator.reverseOrder()))
                 .orElseThrow();
     }
-
         public int getCantidad() {
             return cantidad;
         }

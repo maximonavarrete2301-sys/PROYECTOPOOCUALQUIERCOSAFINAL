@@ -8,7 +8,7 @@ public class PersistenciaObjetos {
     private PersistenciaObjetos(){
     }
 
-    public static void escribeObjetos(String nombreArchivo, Object objeto) throws MeteorologiaException{
+    public static void escribeObjeto(String nombreArchivo, Object objeto) throws MeteorologiaException{
         File carpeta = new File(CARPETA);
         if(!carpeta.exists()){
             carpeta.mkdirs();
@@ -21,7 +21,7 @@ public class PersistenciaObjetos {
         }
     }
 
-    public static Objetc leeObjeto(String nombreArchivo) throws MeteorologiaException{
+    public static Object leeObjeto(String nombreArchivo) throws MeteorologiaException{
         File archivo = new File(CARPETA, nombreArchivo);
         if(!archivo.exists()){
             throw new MeteorologiaException("No se encontró el archivo " + nombreArchivo);
