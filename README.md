@@ -10,6 +10,7 @@ Integrantes:
 Instrucciones de ejecución:
 -Clonar el repositorio y abrir proyecto.
 -Iniciar el programa ejecutando la clase "Main" en el package vista.
+(Verificar en File -> Settings -> Editor -> Gui Designer la opción de Generate GUI esté seleccionada en "Java on source code compilation")
 -El programa mostrará la ventana principal del proyecto, en donde se incluyen las siguientes funcionalidades:
 1. Crear región
 2. Crear comuna
@@ -20,6 +21,6 @@ Instrucciones de ejecución:
 7. Cargar datos
 8. Importar datos de texto
 9. Guardar datos
-10. Guardar datos
+10. Generar Listados
 11. Salir (Finaliza y cierra el programa)
 -
